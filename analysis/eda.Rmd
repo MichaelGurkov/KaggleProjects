@@ -1,0 +1,91 @@
+
+```{r load_libraries}
+
+library(tidyverse)
+
+library(here)
+
+```
+
+
+```{r import_data}
+
+train = here("data", "train.csv") %>% 
+  read_csv() %>% 
+  rename_all(tolower)
+
+
+
+```
+
+
+```{r target_dist}
+
+train %>%
+  mutate(survived = factor(
+    survived,
+    levels = c(0,1),
+    labels = c("no","yes")
+  )) %>%
+  count(survived) %>%
+  mutate(prop = n / sum(n)) %>% 
+  ggplot(aes(x = survived, y = prop, fill = survived)) +
+  geom_col(width = 0.5) + 
+  scale_y_continuous(labels = scales::percent_format()) + 
+  scale_fill_viridis_d(alpha = 0.8,option = "inferno") + 
+  ggtitle("Titanic survival") + ylab(NULL) + xlab(NULL)
+
+
+```
+
+
+
+```{r target_by_sex}
+
+train %>%
+  mutate(survived = factor(
+    survived,
+    levels = c(0,1),
+    labels = c("no","yes")
+  )) %>%
+  count(sex, survived) %>%
+  ggplot(aes(x = sex, y = n, fill = survived)) +
+  geom_col(width = 0.5) + 
+  scale_fill_viridis_d(alpha = 0.8,option = "inferno") + 
+  ggtitle("Titanic survival by sex") + ylab(NULL) + xlab(NULL)
+
+
+```
+
+
+```{r target_by_age_binned}
+
+train %>%
+  mutate(survived = factor(
+    survived,
+    levels = c(0, 1),
+    labels = c("no", "yes")
+  )) %>%
+  filter(!is.na(age)) %>%
+  mutate(age_binned = cut(age, breaks = seq(1, 100, 10) - 1)) %>%
+  count(age_binned, survived) %>%
+  group_by(age_binned) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup %>% 
+  mutate(age_binned = fct_relabel(
+    age_binned,
+    .fun = function(temp_lab) {
+      new_lab = temp_lab %>% str_remove_all(., "\\(") %>% 
+        str_remove_all(., "\\]") %>% 
+        str_replace(., ",","-")
+      return(new_lab)
+    }
+  )) %>% 
+  ggplot(aes(x = age_binned, y = prop, fill = survived)) + 
+  geom_col() + 
+  scale_fill_viridis_d(alpha = 0.8, option = "inferno") + 
+  scale_y_continuous(labels = scales::percent_format()) + 
+  ggtitle("Titanic survival by age groups") + ylab(NULL) + xlab(NULL)
+
+```
+
