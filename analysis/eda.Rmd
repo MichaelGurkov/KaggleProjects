@@ -39,7 +39,6 @@ train %>%
 ```
 
 
-
 ```{r target_by_sex}
 
 train %>%
@@ -50,7 +49,7 @@ train %>%
   )) %>%
   count(sex, survived) %>%
   ggplot(aes(x = sex, y = n, fill = survived)) +
-  geom_col(width = 0.5) + 
+  geom_col(width = 0.5, position = "dodge") + 
   scale_fill_viridis_d(alpha = 0.8,option = "inferno") + 
   ggtitle("Titanic survival by sex") + ylab(NULL) + xlab(NULL)
 
@@ -82,10 +81,10 @@ train %>%
     }
   )) %>% 
   ggplot(aes(x = age_binned, y = prop, fill = survived)) + 
-  geom_col() + 
+  geom_col(position = "dodge", width = 0.6) + 
   scale_fill_viridis_d(alpha = 0.8, option = "inferno") + 
   scale_y_continuous(labels = scales::percent_format()) + 
-  ggtitle("Titanic survival by age groups") + ylab(NULL) + xlab(NULL)
+  ggtitle("Titanic survival by age groups") + ylab(NULL) + xlab("Years")
 
 ```
 
