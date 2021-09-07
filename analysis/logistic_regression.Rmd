@@ -55,17 +55,22 @@ logit_mod = logistic_reg() %>%
 
 ```
 
-```{r fit_model}
-
-logit_wf_fit = workflow() %>% 
-  add_recipe(logit_rec) %>% 
-  add_model(logit_mod) %>%
-  fit(train)
+```{r cross_validation}
 
 
 ```
 
-```{r f}
+
+```{r fit_model}
+
+logit_wf_fit = workflow() %>% 
+  add_recipe(logit_rec) %>% 
+  add_model(logit_mod) %>% 
+  fit()
+
+```
+
+```{r }
 
 logit_wf_fit %>% 
   extract_fit_parsnip() %>% 
